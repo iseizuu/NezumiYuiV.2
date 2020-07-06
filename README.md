@@ -7,7 +7,10 @@
 * Hello there, We are glad u here, to be honest, this is not open source code, but if u see this, two thumbs up for you.
 
 ## Getting Started
-* main file in `index.js` thanks xD
+* clone the repository
+* npm init -y then npm install
+* main file in `index.js`
+* node . (or file name)
 
 ## NB
 * `yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa yang copas dosa`
