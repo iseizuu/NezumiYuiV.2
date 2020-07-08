@@ -45,11 +45,11 @@ client.registry
 	.registerTypesIn(path.join(__dirname, 'types'))
 	.registerGroups([
 		['util', 'Utility'],
-    ['music', 'Music'],
+    		['music', 'Music'],
 		['info', 'Info'],
 		['fun', 'Fun'],
 		['games', 'Games'],
-    ['own', 'Owner']
+    		['own', 'Owner']
 	])
 	.registerDefaultCommands({
 		help: false,
@@ -103,7 +103,7 @@ client.on('disconnect', event => {
 client.on('error', err => client.logger.error(err));
 client.on('warn', warn => client.logger.warn(warn));
 client.on('commandError', (command, err) => client.logger.error(`[COMMAND:${command.name}]\n${err.stack}`));
-client.on('commandRun', (command, message) => {
+client.on('commandRun', (command, promise, message, args, fromPattern, result) => {
   console.log(`[INFO]: ${message.author.tag} runned ${command.name} command!`);
 });
 
