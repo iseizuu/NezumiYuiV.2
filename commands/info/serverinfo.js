@@ -39,19 +39,15 @@ module.exports = class ServerInfoCommand extends Command {
 	}
 
 	run(msg) {
-		msg.guild.members.fetch().then(fetchedMembers => {
 			msg.guild.members.fetch().then(fetchedMembers => {
 			const totaldnd = fetchedMembers.filter(member => member.presence.status === 'dnd');
-      			msg.guild.members.fetch().then(fetchedMembers => {
 			const totalonline = fetchedMembers.filter(member => member.presence.status === 'online');
-        		msg.guild.members.fetch().then(fetchedMembers => {
 			const totalidle = fetchedMembers.filter(member => member.presence.status === 'idle');
-        		msg.guild.members.fetch().then(fetchedMembers => {
 			const totaloff = fetchedMembers.filter(member => member.presence.status === 'offline');
 			const rolestag = msg.guild.roles.cache             //ROLES DENGAN @ TAG COK
             		.filter(r => r.id !== msg.guild.id)
             		.map(r => r).join(", ") || 'none';
-		return msg.embed({
+			return msg.embed({
       			title: 'Nezumi Server Info' ,
       			footer: {text: `${msg.author.username}`},
 	  		color: '#cce7e8',
@@ -94,6 +90,6 @@ module.exports = class ServerInfoCommand extends Command {
 				],
 			thumbnail: { url: msg.guild.iconURL({ dynamic: true, size: 2048 }) }
 		});
-	})})})})})
+	})
 	}
 };
