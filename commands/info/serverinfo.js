@@ -3,23 +3,28 @@ const moment = require('moment');
 const { stripIndents } = require('common-tags');
 
  let region = {
-        "brazil": ":flag_br:",
-        "eu-central": ":flag_eu:",
-        "singapore": ":flag_sg:",
-        "us-central": ":flag_us:",
-        "sydney": ":flag_au:",
-        "us-east": ":flag_us:",
-        "us-south": ":flag_us:",
-        "us-west": ":flag_us:",
-        "eu-west": ":flag_eu:",
-        "vip-us-east": ":flag_us:",
-        "london": ":flag_gb: London",
-        "amsterdam": ":flag_nl:",
-        "hongkong": ":flag_hk:",
-        "russia": ":flag_ru:",
-        "japan": ":flag_jp:",
-        "southafrica": ":flag_za:"
+        "brazil": "Brazil :flag_br:",
+        "eu-central": "Eu Central:flag_eu:",
+        "singapore": ":Singapore flag_sg:",
+        "us-central": "Us Central :flag_us:",
+        "sydney": "Sydney :flag_au:",
+        "us-east": "Us East :flag_us:",
+        "us-south": "Us South :flag_us:",
+        "us-west": "Us West :flag_us:",
+        "eu-west": "Eu West :flag_eu:",
+        "vip-us-east": "Vip Us East :flag_us:",
+        "london": "London :flag_gb: London",
+        "amsterdam": "Amsterdam :flag_nl:",
+        "hongkong": "Hongkong :flag_hk:",
+        "russia": "Russia :flag_ru:",
+        "japan": "Japan :flag_jp:",
+        "southafrica": "South Africa :flag_za:",
+        "india" : "India :flag_in:"
     };
+let def = {
+  	"ALL" : "All Notifications",
+  	"MENTIONS" : "Only Mentions"
+}
 module.exports = class ServerInfoCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -75,10 +80,10 @@ module.exports = class ServerInfoCommand extends Command {
 				{
 					name: '↣ Other ↢',
 					value: stripIndents`
-						•》 Region: ${msg.guild.region}   ${region[msg.guild.region]}
+						•》 Region: ${region[msg.guild.region]}
 						•》 Created at: ${moment.utc(msg.guild.createdAt).format('MM/DD/YYYY h:mm A')}
             					•》 You Joined at : ${moment.utc(msg.member.joinedAt).format('MM/DD/YYYY h:mm A')}
-				    		•》 Notification: ${msg.guild.defaultMessageNotifications}
+				    		•》 Notification: ${def[msg.guild.defaultMessageNotifications]}
 						•》 Verification Level: ${msg.guild.verificationLevel}`,
          				inline: false
 				},
