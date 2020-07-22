@@ -1,6 +1,6 @@
 {
   "name": "izuu",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "a discord music bot with guild , fun and etc",
   "main": "index.js",
   "scripts": {
