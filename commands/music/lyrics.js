@@ -2,7 +2,7 @@ const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
-const { geniusLyricsAPI } = require('../../config.json');
+const { geniusLyricsAPI } = require('../../config.json'); //ur own apiKEY
 const { formatNumber, embedURL } = require('../../util/Util');
 module.exports = class LyricsCommand extends Command {
   constructor(client) {
@@ -10,7 +10,7 @@ module.exports = class LyricsCommand extends Command {
       name: 'lyrics',
       aliases: ["lr"],
       memberName: 'lyrics',
-      description:'Get lyrics of any song or the lyrics of the currently playing song',
+      description: 'Get lyrics of any song',
       group: 'music',
       throttling: {
         usages: 1,
@@ -21,13 +21,13 @@ module.exports = class LyricsCommand extends Command {
           key: 'songName',
           default: '',
           type: 'string',
-          prompt: 'What song lyrics would you like to get?'
+          prompt: 'What song lyrics would you like to searching?'
         }
       ],
       throttling: {
-				usages: 1,
-				duration: 10
-			}
+	      usages: 1,
+	      duration: 10
+      }
     });
   }
   async run(message, { songName }) {
@@ -44,10 +44,9 @@ module.exports = class LyricsCommand extends Command {
         'There is no song playing right now, please try again with a song name or play a song first'
       );
     }
-    const sentMessage = await message.channel.send(
-      '👀 Searching for lyrics 👀'
-    );
+    const sentMessage = await message.embed({color: "#cce7e8", description: '<a:load:712947992881266719> | Searching for the lyrics'});
     var url = `https://api.genius.com/search?q=${encodeURI(songName)}`;
+
     const headers = {
       Authorization: `Bearer ${geniusLyricsAPI}`
     };
@@ -56,7 +55,6 @@ module.exports = class LyricsCommand extends Command {
       var result = await body.json();
       const songID = result.response.hits[0].result.id;
 
-      // get lyrics
       url = `https://api.genius.com/songs/${songID}`;
       body = await fetch(url, { headers });
       result = await body.json();
@@ -66,8 +64,10 @@ module.exports = class LyricsCommand extends Command {
       let lyrics = await getLyrics(song.url);
       lyrics = lyrics.replace(/(\[.+\])/g, '');
       let urll = song.url;
-      if (lyrics.length > 4095)
-        return message.say('Lyrics are too long to be returned as embed');
+      //if (lyrics.length > 4095) owO >//<
+      //  sentMessage.delete();
+      //  return message.embed({description: '<a:nonono:709741696153419776> | Im sorry, but this lyrics too looongg!! >//<'})
+      
       if (lyrics.length < 2048) {
         const lyricsEmbed = new MessageEmbed()
           .setAuthor('Genius', 'https://lh3.googleusercontent.com/e6-dZlTM-gJ2sFxFFs3X15O84HEv6jc9PQGgHtVTn7FP6lUXeEAkDl9v4RfVOwbSuQ')
@@ -78,34 +78,61 @@ module.exports = class LyricsCommand extends Command {
           .setDescription(`${lyrics.trim()} \n\n(\_Source\_ : ${urll})`);
         return sentMessage.edit('', lyricsEmbed);
       } else {
-        // lyrics.length > 2048
-        const firstLyricsEmbed = new MessageEmbed()
-          .setAuthor('Genius', 'https://lh3.googleusercontent.com/e6-dZlTM-gJ2sFxFFs3X15O84HEv6jc9PQGgHtVTn7FP6lUXeEAkDl9v4RfVOwbSuQ')
-          .setURL(urll)
-          .setTitle(`**[ ${song.full_title} ]**`)
-          .setThumbnail(song.header_image_thumbnail_url)
-          .setColor('#cce7e8')
-          .setDescription(lyrics.slice(0, 2048));
-          const secondLyricsEmbed = new MessageEmbed()
-          .setColor('#cce7e8')
-          .setDescription(lyrics.slice(2048, lyrics.length));
-        sentMessage.edit('', firstLyricsEmbed);
-        message.channel.send(secondLyricsEmbed);
+        
+      let pages = [`${lyrics.slice(0, 2048)}`, `${lyrics.slice(2048, lyrics.length)}`]  
+      let page = 1; 
+    
+      let embed = new MessageEmbed()
+      .setAuthor('Genius', 'https://lh3.googleusercontent.com/e6-dZlTM-gJ2sFxFFs3X15O84HEv6jc9PQGgHtVTn7FP6lUXeEAkDl9v4RfVOwbSuQ')
+      .setURL(urll)
+      .setTitle(`**[ ${song.full_title} ]**`)
+      .setThumbnail(song.header_image_thumbnail_url)
+      .setColor("#cce7e8")
+      .setFooter(`Page ${page} of ${pages.length}`)
+      .setDescription(pages[page-1])
+      message.channel.send(embed).then(msg => {
+	      
+      		msg.react('⬅').then( r => {
+      		msg.react('➡')
+			
+    const backwardsFilter = (reaction, user) => reaction.emoji.name === '⬅' && user.id === message.author.id;
+    const forwardsFilter = (reaction, user) => reaction.emoji.name === '➡' && user.id === message.author.id;
+
+    const backwards = msg.createReactionCollector(backwardsFilter, {timer: 6000});
+    const forwards = msg.createReactionCollector(forwardsFilter, {timer: 6000});
+ 
+      backwards.on('collect', r => {
+	      if (page === 1) return;
+	      page--;
+	      embed.setDescription(pages[page-1]);
+	      embed.setFooter(`Page ${page} of ${pages.length}`);
+	      msg.reactions.resolve("⬅").users.remove(message.author.id)
+	      msg.edit(embed)
+
+      })
+
+      forwards.on('collect', r => {
+	      if (page === pages.length) return;
+	      page++;
+	      embed.setDescription(pages[page-1]);
+	      embed.setFooter(`Page ${page} of ${pages.length}`);
+	      msg.reactions.resolve("➡").users.remove(message.author.id)
+	      msg.edit(embed);
+        })
+      })
+    })
+        sentMessage.delete();
         return;
       }
     } catch (e) {
-      console.error(e);
-      return sentMessage.edit(
-        'Something when wrong, please try again or be more specific (or just type manually)'
-      );
+      	console.error(e);
+      	return sentMessage.edit({embed: {color: "#cce7e8", description: 'Something when wrong, ~~i can feel it~~ , can you be more specific?'}});
     }
     async function getLyrics(url) {
-      const response = await fetch(url);
-      const text = await response.text();
-      const $ = cheerio.load(text);
-      return $('.lyrics')
-        .text()
-        .trim();
+      	const response = await fetch(url);
+      	const text = await response.text();
+      	const $ = cheerio.load(text);
+      	return $('.lyrics').text().trim();
     }
   }
 };
