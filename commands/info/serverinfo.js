@@ -20,10 +20,10 @@ const { stripIndents } = require('common-tags');
         "japan": "Japan :flag_jp:",
         "southafrica": "South Africa :flag_za:",
         "india" : "India :flag_in:"
-    };
+	};
 let def = {
-  	"ALL" : "All Notifications",
-  	"MENTIONS" : "Only Mentions"
+	"ALL" : "All Notification will be received",
+	"MENTIONS" : "Only Mentions"
 }
 module.exports = class ServerInfoCommand extends Command {
 	constructor(client) {
@@ -33,7 +33,7 @@ module.exports = class ServerInfoCommand extends Command {
 			group: 'info',
 			memberName: 'server',
 			description: 'Get info on the server.',
-      			hidden: false,
+			hidden: false,
 			details: `Get detailed information on the server.`,
 			guildOnly: true,
 			throttling: {
@@ -44,57 +44,65 @@ module.exports = class ServerInfoCommand extends Command {
 	}
 
 	run(msg) {
-			msg.guild.members.fetch().then(fetchedMembers => {
-			const totaldnd = fetchedMembers.filter(member => member.presence.status === 'dnd');
-			const totalonline = fetchedMembers.filter(member => member.presence.status === 'online');
-			const totalidle = fetchedMembers.filter(member => member.presence.status === 'idle');
-			const totaloff = fetchedMembers.filter(member => member.presence.status === 'offline');
-			const rolestag = msg.guild.roles.cache             //ROLES DENGAN @ TAG COK
-            		.filter(r => r.id !== msg.guild.id)
-            		.map(r => r).join(", ") || 'none';
-			return msg.embed({
-      			title: 'Nezumi Server Info' ,
-      			footer: {text: `${msg.author.username}`},
-	  		color: '#cce7e8',
-			description: `**${msg.guild.name}** (ID: ${msg.guild.id})\n**Owner: ${msg.guild.owner.user.tag} <:owner:711606469971148831>**\n(ID: ${msg.guild.ownerID})`,
-			fields: [
-				{
-					name: '↣ Channels ↢',
-					value: stripIndents`
-						•》 ${msg.guild.channels.cache.filter(ch => ch.type === 'text').size} Text, ${msg.guild.channels.cache.filter(ch => ch.type === 'voice').size} Voice
-            					•》 System Channel: ${msg.guild.systemChannel}
-						•》 AFK: ${msg.guild.afkChannelID ? `<#${msg.guild.afkChannelID}> after ${msg.guild.afkTimeout / 60}min` : 'None.'}`,
-					inline: true
-				},
-				{
-					name: '↣ Member ↢',
-					value: stripIndents`
-						•》 Total Members ${msg.guild.memberCount}
-            					•》 Humans: ${msg.guild.members.cache.filter(member => !member.user.bot).size} Bot: ${msg.guild.members.cache.filter(member => member.user.bot).size}
-						•》 Online: ${totalonline.size}
-						•》 Idle: ${totalidle.size}
-						•》 Dont Disturb: ${totaldnd.size}
-            					•》 Offline: ${totaloff.size}`,
-					inline: true
-				},
-				{
-					name: '↣ Other ↢',
-					value: stripIndents`
-						•》 Region: ${region[msg.guild.region]}
-						•》 Created at: ${moment.utc(msg.guild.createdAt).format('MM/DD/YYYY h:mm A')}
-            					•》 You Joined at : ${moment.utc(msg.member.joinedAt).format('MM/DD/YYYY h:mm A')}
-				    		•》 Notification: ${def[msg.guild.defaultMessageNotifications]}
-						•》 Verification Level: ${msg.guild.verificationLevel}`,
-         				inline: false
-				},
-        			{
-					name: `Roles\(${msg.guild.roles.cache.size}\)`,
-					value: stripIndents`
-					    ${rolestag}`
-				}
-				],
-			thumbnail: { url: msg.guild.iconURL({ dynamic: true, size: 2048 }) }
+		const rolestag = msg.guild.roles.cache.filter(r => r.id !== msg.guild.id).map(r => r);
+		msg.guild.members.fetch().then(fetchedMembers => {
+			if(msg.content.includes('roles')) {
+			msg.embed({
+				title: `All Roles in ${msg.guild.name}`,
+				color: '#cce7e8',
+				description: `${rolestag.join(", ") || 'No roles found'},`})
+			} else {
+				const totaldnd = fetchedMembers.filter(member => member.presence.status === 'dnd');
+				const totalonline = fetchedMembers.filter(member => member.presence.status === 'online');
+				const totalidle = fetchedMembers.filter(member => member.presence.status === 'idle');
+				const totaloff = fetchedMembers.filter(member => member.presence.status === 'offline');
+				return msg.embed({
+					title: 'Nezumi Server Info' ,
+					footer: {text: `${msg.author.username}`},
+					color: '#cce7e8',
+					description: `**${msg.guild.name}** (ID: ${msg.guild.id})\n**Owner: ${msg.guild.owner.user.tag} <:owner:711606469971148831>**\n(ID: ${msg.guild.ownerID})`,
+					fields: [
+					{
+						name: '↣ Channels ↢',
+						value: stripIndents`
+							•》 ${msg.guild.channels.cache.filter(ch => ch.type === 'text').size} Text, ${msg.guild.channels.cache.filter(ch => ch.type === 'voice').size} Voice
+							•》 System Channel: ${msg.guild.systemChannel}
+							•》 AFK: ${msg.guild.afkChannelID ? `<#${msg.guild.afkChannelID}> after ${msg.guild.afkTimeout / 60}min` : 'None.'}`,
+						inline: true
+					},
+					{
+						name: '↣ Member ↢',
+						value: stripIndents`
+							•》 Total Members ${msg.guild.memberCount}
+							•》 Humans: ${msg.guild.members.cache.filter(member => !member.user.bot).size} Bot: ${msg.guild.members.cache.filter(member => member.user.bot).size}
+							•》 Online: ${totalonline.size}
+							•》 Idle: ${totalidle.size}
+							•》 Dont Disturb: ${totaldnd.size}
+							•》 Offline: ${totaloff.size}`,
+						inline: true
+					},
+					{
+						name: '↣ Other ↢',
+						value: stripIndents`
+							•》 Region: ${region[msg.guild.region]}
+							•》 Created at: ${moment.utc(msg.guild.createdAt).format('MM/DD/YYYY h:mm A')}
+							•》 You Joined at : ${moment.utc(msg.member.joinedAt).format('MM/DD/YYYY h:mm A')}
+							•》 Notification: ${def[msg.guild.defaultMessageNotifications]}
+							•》 Verification Level: ${msg.guild.verificationLevel}`,
+						inline: false
+					},
+					{
+						name: `Roles(${msg.guild.roles.cache.size})`,
+						value: stripIndents`
+						${rolestag.splice(0,10).join(", ") || 'none'}
+					
+						<:halozero:721878360338464778> | Roles displayed 10, type \`${process.env.PREFIX}server roles\` for show all roles.`
+                
+					}
+					],
+					thumbnail: { url: msg.guild.iconURL({ dynamic: true, size: 2048 }) }
+				});
+			}
 		});
-	})
 	}
 };
