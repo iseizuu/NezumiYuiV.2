@@ -19,7 +19,7 @@ module.exports = class FriendshipCommand extends Command {
 			group: 'fun',
 			memberName: 'friendship',
 			description: 'Determines how good friends two users are.',
-      			hidden: false,
+			hidden: false,
 			throttling: {
 				usages: 1,
 				duration: 10
