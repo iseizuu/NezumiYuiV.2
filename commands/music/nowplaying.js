@@ -30,7 +30,6 @@ module.exports = class NowPlayingCommand extends Command {
     }
       const pict = 'https://cdn.discordapp.com/emojis/661059635687718932.gif?v=1';
       const videoEmbed = new MessageEmbed()
-      .setThumbnail(video.thumbnail)
       .setAuthor('Nezumi Now Playing', pict)
       .setColor('#cce7e8')
       .setTitle(video.title)
@@ -72,9 +71,9 @@ module.exports = class NowPlayingCommand extends Command {
       (passedTimeInMS / totalDurationInMS) * 10
     );
     let playBack = '';
-    for (let i = 1; i < 21; i++) {
+    for (let i = 1; i < 20; i++) {
       if (playBackBarLocation == 0) {
-        playBack = '🟡▬▬▬▬';
+        playBack = '🟡▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬';
         break;
       } else if (i == playBackBarLocation * 2) {
         playBack = playBack + '🟡';

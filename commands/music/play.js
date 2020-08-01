@@ -9,14 +9,14 @@ module.exports = class PlayCommand extends Command {
   constructor(client) {
     super(client, {
       name: 'play',
-      aliases: ['p', 'add'],
+      aliases: ['p'],
       memberName: 'play',
       group: 'music',
       description: 'Play any song or playlist from youtube',
       guildOnly: true,
       clientPermissions: ['SPEAK', 'CONNECT'],
       throttling: {
-        usages: 1,
+        usages: 2,
         duration: 10
       },
       args: [
@@ -24,6 +24,7 @@ module.exports = class PlayCommand extends Command {
           key: 'query',
           prompt: 'What song or playlist would you like to listen to? \n Just write the song in down bellow, without prefix',
           type: 'string',
+          default: message => message.author.id,
           validate: function(query) {
             return query.length > 0 && query.length < 200;
           }
@@ -33,16 +34,23 @@ module.exports = class PlayCommand extends Command {
   }
 
   async run(message, { query }) {
-     //if (message.author.id !== '271576733168173057') return message.say('Sorry, music command is being rewritten :(');
+    // if (message.author.id !== '271576733168173057') return message.say('play commands being ratelimit, Im sorry :(');
     const voiceChannel = message.member.voice.channel;
     if (!voiceChannel) return message.say('Join a channel and try again');
-		if (!voiceChannel.permissionsFor(this.client.user).has(['CONNECT', 'SPEAK', 'VIEW_CHANNEL'])) {
-			return message.reply('I\'m missing the "Connect", "Speak", or "View Channel" permission for this channel.');
-		}
+    if (!voiceChannel.permissionsFor(this.client.user).has(['CONNECT', 'SPEAK', 'VIEW_CHANNEL'])) {
+      return message.reply('I\'m missing the "Connect", "Speak", or "View Channel" permission for this channel.');
+    }
+    if(message.guild.musicData.isPlaying === true && voiceChannel.id !== message.guild.musicData.nowPlaying.voiceChannel.id) {
+      return message.channel.send({embed : {
+          description: `Error accepting you request, because you not in **${message.guild.musicData.nowPlaying.voiceChannel.name}** `,
+          color: 'RED'
+      }});
+    }
     if (message.guild.triviaData.isTriviaRunning == true) {
       return message.say('Please try after the trivia has ended');
     }
-
+	
+		
     if (
       // if the user entered a youtube playlist url
       query.match(
@@ -93,20 +101,6 @@ module.exports = class PlayCommand extends Command {
           'There was a problem getting the video you provided!'
         );
       });
-      // // can be uncommented if you don't want the bot to play live streams
-      // if (video.raw.snippet.liveBroadcastContent === 'live') {
-      //   return message.say("I don't support live streams!");
-      // }
-      // // can be uncommented if you don't want the bot to play videos longer than 1 hour
-      // if (video.duration.hours !== 0) {
-      //   return message.say('I cannot play videos longer than 1 hour');
-      // }
-      // // can be uncommented if you want to limit the queue
-      // if (message.guild.musicData.queue.length > 10) {
-      //   return message.say(
-      //     'There are too many songs in the queue already, skip or wait a bit'
-      //   );
-      // }
       message.guild.musicData.queue.push(
         PlayCommand.constructSongObj(video, voiceChannel)
       );
@@ -119,6 +113,7 @@ module.exports = class PlayCommand extends Command {
       } else if (message.guild.musicData.isPlaying == true) {
         let qqe = new MessageEmbed()
           .setTitle('✅ Success')
+          .setColor('#cce7e8')
           .setDescription(`${video.title} added to queue`)   
         return message.say(qqe);
       }
@@ -135,62 +130,11 @@ module.exports = class PlayCommand extends Command {
         `I had some trouble finding what you were looking for, please try again or be more specific`
       );
     }
-    const vidNameArr = [];
-    for (let i = 0; i < videos.length; i++) {
-      vidNameArr.push(`${i + 1}: ${videos[i].title}`);
-    }
-    vidNameArr.push('exit');
-    const picta = 'https://i.pinimg.com/originals/07/1a/6d/071a6db29f2b971a48f5ca483632e5b4.gif';
-    const embed = new MessageEmbed()
-      .setColor('#cce7e8')
-      .setAuthor('Choose a song by commenting a number between 1 and 5', picta)
-      .setFooter(`Req by : ${message.author.tag}`)
-      .setTimestamp()
-      .addField('Song 1', vidNameArr[0])
-      .addField('Song 2', vidNameArr[1])
-      .addField('Song 3', vidNameArr[2])
-      .addField('Song 4', vidNameArr[3])
-      .addField('Song 5', vidNameArr[4])
-      .addField('Exit', 'exit');
-    var songEmbed = await message.channel.send({ embed });
-    message.channel
-      .awaitMessages(
-        function(msg) {
-          return (msg.content > 0 && msg.content < 6) || msg.content === 'exit';
-         
-        },
-        {
-          max: 1,
-          time: 60000,
-          errors: ['time']
-        }
-      )
-    
-      .then(function(response) {
-        const videoIndex = parseInt(response.first().content);
-        if (response.first().content === 'exit') return songEmbed.delete();
+    var songEmbed = await message.react("✅").then(function(response) {
+        const videoIndex = parseInt(1);
         youtube
           .getVideoByID(videos[videoIndex - 1].id)
           .then(function(video) {
-            // // can be uncommented if you don't want the bot to play live streams
-            // if (video.raw.snippet.liveBroadcastContent === 'live') {
-            //   songEmbed.delete();
-            //   return message.say("I don't support live streams!");
-            // }
-
-            // // can be uncommented if you don't want the bot to play videos longer than 1 hour
-            // if (video.duration.hours !== 0) {
-            //   songEmbed.delete();
-            //   return message.say('I cannot play videos longer than 1 hour');
-            // }
-
-            // // can be uncommented if you don't want to limit the queue
-            // if (message.guild.musicData.queue.length > 10) {
-            //   songEmbed.delete();
-            //   return message.say(
-            //     'There are too many songs in the queue already, skip or wait a bit'
-            //   );
-            // }
             message.guild.musicData.queue.push(
               PlayCommand.constructSongObj(video, voiceChannel)
             );
@@ -205,7 +149,8 @@ module.exports = class PlayCommand extends Command {
                 songEmbed.delete();
               }
               let qqew = new MessageEmbed()
-              .setTitle('✅ | Success')
+              .setTitle('✅ Success')
+              .setColor('#cce7e8')
               .setDescription(`${video.title} added to queue`)   
             message.say(qqew);
             }
@@ -219,17 +164,10 @@ module.exports = class PlayCommand extends Command {
             );
           });
       })
-      .catch(function() {
-        if (songEmbed) {
-          songEmbed.delete();
-        }
-        return message.say(
-          'Please try again and enter a number between 1 and 5 or exit'
-        );
-      });
+      
   }
   static playSong(queue, message) {
-    const classThis = this; // use classThis instead of 'this' because of lexical scope below
+    const classThis = this;
     queue[0].voiceChannel
       .join()
       .then(function(connection) {
@@ -244,10 +182,10 @@ module.exports = class PlayCommand extends Command {
             message.guild.musicData.songDispatcher = dispatcher;
             dispatcher.setVolume(message.guild.musicData.volume);
             const videoEmbed = new MessageEmbed()
-              .setTitle('Playing 🎶')
-              .setImage(queue[0].thumbnail)
+              .setTitle('🎵 | Playing')
+              .setThumbnail(queue[0].thumbnail)
               .setColor('#cce7e8')
-              .addField('Playing:', `${queue[0].title} \[${queue[0].duration}\]`)
+              .setDescription(`**[${queue[0].title}](${queue[0].url}) [${queue[0].duration}]**`)
               .setTimestamp()
               .setFooter(`Req by : ${message.author.username}`)
               if (queue[1]) videoEmbed.addField('Next Song:', queue[1].title);
@@ -306,8 +244,8 @@ module.exports = class PlayCommand extends Command {
               return classThis.playSong(queue, message);
             } else {
               let embods = new MessageEmbed()
-              .setTitle('✅ Horrayy!')
               .setDescription('✔ | Im leaving, because the song has ended :)')
+              .setColor('#cce7e8')
              message.say(embods);
               message.guild.musicData.isPlaying = false;
               message.guild.musicData.nowPlaying = null;
