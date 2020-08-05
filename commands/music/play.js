@@ -24,7 +24,6 @@ module.exports = class PlayCommand extends Command {
           key: 'query',
           prompt: 'What song or playlist would you like to listen to? \n Just write the song in down bellow, without prefix',
           type: 'string',
-          default: message => message.author.id,
           validate: function(query) {
             return query.length > 0 && query.length < 200;
           }
@@ -125,11 +124,6 @@ module.exports = class PlayCommand extends Command {
         'There was a problem searching the video you requested :('
       );
     });
-    if (videos.length < 5) {
-      return message.say(
-        `I had some trouble finding what you were looking for, please try again or be more specific`
-      );
-    }
     var songEmbed = await message.react("✅").then(function(response) {
         const videoIndex = parseInt(1);
         youtube
