@@ -13,8 +13,8 @@ module.exports = class LeaveCommand extends Command {
   }
 
 	run(msg) {
-		const connection = this.client.voice.connections.get(msg.guild.id);
-		if (!connection) return msg.reply('I am not in a voice channel.');
+    const connection = this.client.voice.connections.get(msg.guild.id);
+    if (!connection) return msg.reply('I am not in a voice channel.');
     if(msg.guild.musicData.isPlaying === true && msg.member.voice.channel.id !== msg.guild.musicData.nowPlaying.voiceChannel.id) {
       return msg.channel.send({embed : {
           description: `Error accepting you request, because you not in **${msg.guild.musicData.nowPlaying.voiceChannel.name}** `,
