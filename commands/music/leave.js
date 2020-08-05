@@ -12,7 +12,7 @@ module.exports = class LeaveCommand extends Command {
     });
   }
 
-	run(msg) {
+  run(msg) {
     const connection = this.client.voice.connections.get(msg.guild.id);
     if (!connection) return msg.reply('I am not in a voice channel.');
     if(msg.guild.musicData.isPlaying === true && msg.member.voice.channel.id !== msg.guild.musicData.nowPlaying.voiceChannel.id) {
@@ -32,6 +32,5 @@ module.exports = class LeaveCommand extends Command {
       connection.channel.leave();
       return msg.reply(`Left **${connection.channel.name}**...`);
     }
-
-	}
+  }
 };
