@@ -22,7 +22,7 @@ module.exports = class PlayCommand extends Command {
       args: [
         {
           key: 'query',
-          prompt: 'What song or playlist would you like to listen to? \n Just write the song in down bellow, without prefix',
+          prompt: 'What song do you want to play?',
           type: 'string',
           validate: function(query) {
             return query.length > 0 && query.length < 200;
@@ -100,6 +100,20 @@ module.exports = class PlayCommand extends Command {
           'There was a problem getting the video you provided!'
         );
       });
+      // // can be uncommented if you don't want the bot to play live streams
+      // if (video.raw.snippet.liveBroadcastContent === 'live') {
+      //   return message.say("I don't support live streams!");
+      // }
+      // // can be uncommented if you don't want the bot to play videos longer than 1 hour
+      // if (video.duration.hours !== 0) {
+      //   return message.say('I cannot play videos longer than 1 hour');
+      // }
+      // // can be uncommented if you want to limit the queue
+      // if (message.guild.musicData.queue.length > 10) {
+      //   return message.say(
+      //     'There are too many songs in the queue already, skip or wait a bit'
+      //   );
+      // }
       message.guild.musicData.queue.push(
         PlayCommand.constructSongObj(video, voiceChannel)
       );
@@ -129,6 +143,25 @@ module.exports = class PlayCommand extends Command {
         youtube
           .getVideoByID(videos[videoIndex - 1].id)
           .then(function(video) {
+            // // can be uncommented if you don't want the bot to play live streams
+            // if (video.raw.snippet.liveBroadcastContent === 'live') {
+            //   songEmbed.delete();
+            //   return message.say("I don't support live streams!");
+            // }
+
+            // // can be uncommented if you don't want the bot to play videos longer than 1 hour
+            // if (video.duration.hours !== 0) {
+            //   songEmbed.delete();
+            //   return message.say('I cannot play videos longer than 1 hour');
+            // }
+
+            // // can be uncommented if you don't want to limit the queue
+            // if (message.guild.musicData.queue.length > 10) {
+            //   songEmbed.delete();
+            //   return message.say(
+            //     'There are too many songs in the queue already, skip or wait a bit'
+            //   );
+            // }
             message.guild.musicData.queue.push(
               PlayCommand.constructSongObj(video, voiceChannel)
             );
@@ -212,6 +245,7 @@ module.exports = class PlayCommand extends Command {
             })
         })
         stop.on("collect", r => {
+            message.guild.musicData.songDispatcher.resume()
             message.guild.musicData.songDispatcher.end();
             msg.reactions.resolve("⏹").users.remove(message.author.id)
             message.channel.send("⏹ Song Stopped").then(async message => {
@@ -219,6 +253,7 @@ module.exports = class PlayCommand extends Command {
             })
         })
         next.on("collect", r => {
+          message.guild.musicData.songDispatcher.resume()
           message.guild.musicData.songDispatcher.end();
           message.guild.musicData.queue.length = 0;
           msg.reactions.resolve("❌").users.remove(message.author.id)
