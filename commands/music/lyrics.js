@@ -64,9 +64,9 @@ module.exports = class LyricsCommand extends Command {
       let lyrics = await getLyrics(song.url);
       lyrics = lyrics.replace(/(\[.+\])/g, '');
       let urll = song.url;
-      //if (lyrics.length > 4095) owO >//<
-      //  sentMessage.delete();
-      //  return message.embed({description: '<a:nonono:709741696153419776> | Im sorry, but this lyrics too looongg!! >//<'})
+      if (lyrics.length > 4095)
+        return message.say(
+          'Lyrics are too long my embed can handle thatt');
       
       if (lyrics.length < 2048) {
         const lyricsEmbed = new MessageEmbed()
@@ -75,7 +75,7 @@ module.exports = class LyricsCommand extends Command {
           .setTitle(`**[ ${song.full_title} ]**`)
           .setThumbnail(song.header_image_thumbnail_url)
           .setColor('#cce7e8')
-          .setDescription(`${lyrics.trim()} \n\n(\_Source\_ : ${urll})`);
+          .setDescription(`${lyrics.trim()}`);
         return sentMessage.edit('', lyricsEmbed);
       } else {
         
