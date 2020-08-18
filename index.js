@@ -56,7 +56,7 @@ client.registry
 		ping: false,
 		prefix: false,
 		commandState: false,
-    eval: true,
+		eval: true,
 		unknownCommand: false
 	})
   .registerCommandsIn(path.join(__dirname, 'commands'));
@@ -70,8 +70,7 @@ client.registry
 client.on("ready", async () =>{
   console.log(`${client.user.username} Ready to fight`);
   setInterval(async () => {
-    let ran = [`nez. | ${formatNumber(client.users.cache.size)} Users`, `Found Bug? | ${PREFIX}report`]; //${client.guilds.cache.size} Server`, `${client.users.cache.size} Member`
-    let dom = ran[Math.floor(Math.random() * ran.length)]; //`nez. | ${formatNumber(client.users.cache.size)} Users`,
+    let ran = [`nez. | ${formatNumber(client.users.cache.size)} Users`, `Found Bug? | ${PREFIX}report`];
     client.user.setPresence({
       activity: {
         name: dom,
@@ -104,13 +103,14 @@ client.on('error', err => client.logger.error(err));
 client.on('warn', warn => client.logger.warn(warn));
 client.on('commandError', (command, err) => client.logger.error(`[COMMAND:${command.name}]\n${err.stack}`));
 client.on('commandRun', (command, promise, message, args, fromPattern, result) => {
-  console.log(`[INFO]: ${message.author.tag} runned ${command.name} command!`);
+	if(client.isOwner(message.author)) return true;
+	console.log(`[INFO]: ${message.author.tag} runned ${command.name} command!`);
 });
 
 
 //tag event
 
- client.on('message', async message => {
+client.on('message', async message => {
    let embed = new MessageEmbed()
     .setColor('#cce7e8')
     .setDescription(`Hello **${message.author.tag}**, My prefix **\`${prefix}\`** || Or ${prefix}help  🎉🥳`)
