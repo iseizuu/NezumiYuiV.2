@@ -6,7 +6,7 @@ module.exports = class ExCommand extends Command {
         super(client, {
             name: 'execute',
             aliases: ['ex', 'exec', 'sh'],
-            group: 'owner',
+            group: 'own',
             memberName: 'execute',
             description: 'Ex',
             guarded: true,
