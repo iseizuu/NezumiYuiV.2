@@ -8,7 +8,7 @@ module.exports = class SayCommand extends Command {
 			group: 'own',
 			memberName: 'say',
 			description: 'DEV ONLY',
-      			hidden: true,
+			hidden: true,
 			args: [
 				{
 					key: 'text',
