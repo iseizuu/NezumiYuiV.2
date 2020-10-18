@@ -45,8 +45,8 @@ client.registry
 	.registerGroups([
     ['util', 'Utility'],
     ['music', 'Music'],
-		['info', 'Info'],
-		['fun', 'Fun'],
+    ['info', 'Info'],
+    ['fun', 'Fun'],
     ['games', 'Games'],
     ['own', 'Owner']
 	])
@@ -66,7 +66,7 @@ client.on("ready", async () =>{
   setInterval(async () => {
     client.user.setPresence({
       activity: {
-        name: 'Hey',
+        name: `${client.guilds.cache.size} Servers`,
         type: "WATCHING",
         url: "https://www.twitch.tv/a"
       },
