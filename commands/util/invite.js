@@ -9,8 +9,8 @@ module.exports = class UtilCommand extends Command {
 			group: 'util',
 			memberName: 'invite',
 			description: 'Want to invite or vote me?',
-            		guarded: true,
-            		throttling: {
+			guarded: true,
+			throttling: {
 				usages: 2,
 				duration: 5
 			},
@@ -18,11 +18,11 @@ module.exports = class UtilCommand extends Command {
 	}
 
 	async run(msg) {
-        	const embed = new MessageEmbed()
-        	.setTitle('Invite / Vote')
-        	.setDescription(`${this.client.util.embedURL('Invite Me', 'https://discord.com/oauth2/authorize?client_id=686908676606263326&permissions=8&scope=bot')} | ${this.client.util.embedURL('Vote Me', 'https://top.gg/bot/686908676606263326/vote')} `)
-        	.setFooter(msg.author.tag)
-        	.setTimestamp();
+		const embed = new MessageEmbed()
+		.setTitle('Invite / Vote')
+		.setDescription(`${this.client.util.embedURL('Invite Me', `${this.client.generateInvite(['ADMINISTRATOR'])}`)} | ${this.client.util.embedURL('Vote Me', 'https://top.gg/bot/686908676606263326/vote')} `)
+		.setFooter(msg.author.tag)
+		.setTimestamp();
 		msg.say(embed);
 	}
 };
