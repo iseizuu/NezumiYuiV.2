@@ -1,13 +1,12 @@
 require('dotenv').config();
 const path = require('path');
-const { formatNumber } = require('./util/Util');
 const { MessageEmbed } = require("discord.js");
 const { Structures } = require('discord.js');
 const { prefix } = require('./config.json');
 const http = require('http');
 const express = require('express');
 const app = express();
-const { PREFIX, INVITE } = process.env;
+const { INVITE } = process.env;
 const Client = require('./structures/Client');
 
 Structures.extend('Guild', Guild => {
@@ -32,7 +31,7 @@ Structures.extend('Guild', Guild => {
   return MusicGuild;
 });
 const client = new Client({
-	commandPrefix: PREFIX,
+	commandPrefix: prefix,
 	owner: '271576733168173057',
 	invite: INVITE,
 	disableMentions: 'everyone',
@@ -44,12 +43,12 @@ client.registry
 	.registerDefaultTypes()
 	.registerTypesIn(path.join(__dirname, 'types'))
 	.registerGroups([
-		['util', 'Utility'],
-    		['music', 'Music'],
+    ['util', 'Utility'],
+    ['music', 'Music'],
 		['info', 'Info'],
 		['fun', 'Fun'],
-		['games', 'Games'],
-    		['own', 'Owner']
+    ['games', 'Games'],
+    ['own', 'Owner']
 	])
 	.registerDefaultCommands({
 		help: false,
@@ -61,19 +60,13 @@ client.registry
 	})
   .registerCommandsIn(path.join(__dirname, 'commands'));
 
-  client.on('ready', () => {
-	client.logger.info(`[READY] Logged in as ${client.user.tag}! ID: ${client.user.id}`);
-
-});
-
 //Listener Event: Bot Launched
 client.on("ready", async () =>{
-  console.log(`${client.user.username} Ready to fight`);
+  client.logger.info(`[READY] Logged in as ${client.user.tag}! ID: ${client.user.id}`);
   setInterval(async () => {
-    let ran = [`nez. | ${formatNumber(client.users.cache.size)} Users`, `Found Bug? | ${PREFIX}report`];
     client.user.setPresence({
       activity: {
-        name: dom,
+        name: 'Hey',
         type: "WATCHING",
         url: "https://www.twitch.tv/a"
       },
@@ -102,6 +95,7 @@ client.on('disconnect', event => {
 client.on('error', err => client.logger.error(err));
 client.on('warn', warn => client.logger.warn(warn));
 client.on('commandError', (command, err) => client.logger.error(`[COMMAND:${command.name}]\n${err.stack}`));
+// eslint-disable-next-line no-unused-vars
 client.on('commandRun', (command, promise, message, args, fromPattern, result) => {
 	if(client.isOwner(message.author)) return true;
 	console.log(`[INFO]: ${message.author.tag} runned ${command.name} command!`);

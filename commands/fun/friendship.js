@@ -1,15 +1,11 @@
+/* eslint-disable no-undef */
 const Command = require('../../structures/Command');
 const { MersenneTwister19937, integer } = require('random-js');
 const { createCanvas, loadImage, registerFont } = require('canvas');
 const request = require('node-superfetch');
 const path = require('path');
-const { percentColor } = require('../../util/Util');
 registerFont(path.join(__dirname, '..', '..', 'assets', 'font', 'Pinky Cupid.otf'), { family: 'Pinky Cupid' });
-const percentColors = [
-	{ pct: 0.0, color: { r: 0, g: 0, b: 255 } },
-	{ pct: 0.5, color: { r: 12, g: 222 / 2, b: 255 / 2 } },
-	{ pct: 1.0, color: { r: 1, g: 215, b: 0 } }
-];
+
 
 module.exports = class FriendshipCommand extends Command {
 	constructor(client) {

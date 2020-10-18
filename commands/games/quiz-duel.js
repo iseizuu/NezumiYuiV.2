@@ -56,15 +56,15 @@ module.exports = class QuizDuelCommand extends Command {
 			let oppoPoints = 0;
 			while (!winner) {
 				const question = await this.fetchQuestion();
-        		const embed = new MessageEmbed()
-        		.setAuthor('Nezira Quiz Duel', 'https://msingermany.co.in/wp-content/uploads/2019/07/lg.walking-clock-preloader.gif')
-        		.setTitle('You have 15 seconds to answer this question.')
-        		.setDescription(stripIndents`**Question**
+				const embed = new MessageEmbed()
+				.setAuthor('Nezira Quiz Duel', 'https://msingermany.co.in/wp-content/uploads/2019/07/lg.walking-clock-preloader.gif')
+				.setTitle('You have 15 seconds to answer this question.')
+				.setDescription(stripIndents`**Question**
 					${question.question}
 					**Answer**
 					${question.answers.map((answer, i) => `**${choices[i]}.** ${answer}`).join('\n')}`)
-        			.setColor('#ff3bad')
-        			.setFooter(msg.author.tag)
+					.setColor('#ff3bad')
+					.setFooter(msg.author.tag)
 					.setTimestamp()
 					await msg.say(embed);
 					const answered = [];

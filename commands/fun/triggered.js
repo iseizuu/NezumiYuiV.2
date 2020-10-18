@@ -2,7 +2,6 @@ const Command = require('../../structures/Command');
 const { createCanvas, loadImage } = require('canvas');
 const GIFEncoder = require('gifencoder');
 const request = require('node-superfetch');
-const path = require('path');
 const { streamToArray } = require('../../util/Util');
 const { drawImageWithTint } = require('../../util/Canvas');
 const coord1 = [-25, -33, -42, -14];
@@ -16,7 +15,7 @@ module.exports = class TriggeredCommand extends Command {
 			group: 'fun',
 			memberName: 'triggered',
 			description: 'Draws a user\'s avatar over the "Triggered" meme.',
-      			hidden: false,
+			hidden: false,
 			throttling: {
 				usages: 1,
 				duration: 10
@@ -36,7 +35,7 @@ module.exports = class TriggeredCommand extends Command {
 	async run(msg, { user }) {
 		const avatarURL = user.displayAvatarURL({ format: 'png', size: 2048 });
 		try {
-		  const base = await loadImage('https://cdn.discordapp.com/attachments/688763072864976906/702119398638354482/triggered.png');
+			const base = await loadImage('https://cdn.discordapp.com/attachments/688763072864976906/702119398638354482/triggered.png');
 			const { body } = await request.get(avatarURL);
 			const avatar = await loadImage(body);
 			const encoder = new GIFEncoder(base.width, base.width);
