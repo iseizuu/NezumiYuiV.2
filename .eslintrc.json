@@ -10,6 +10,15 @@
   },
   "rules": {
     "//": "The no-console rule is only for development purposes",
+    "brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
+    "comma-dangle": ["error", "always-multiline"],
+    "comma-spacing": "error",
+    "comma-style": "error",
+    "curly": ["error", "multi-line", "consistent"],
+    "semi": ["error", "always"],
+    "indent": ["error", 4],
+    "quotes": ["error", "single"],
+    "space-before-function-paren": "off",
     "no-console": "off",
     "no-useless-escape": "off",
     "no-inner-declarations": "off"
