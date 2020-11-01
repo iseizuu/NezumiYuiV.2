@@ -9,6 +9,7 @@
 ## Getting Started
 * clone the repository
 * npm init -y then npm install
+* rename ʻexample.env` to `.env` open the file and change it with your own token or key
 * main file in `index.js`
 * node . (or file name)
 
