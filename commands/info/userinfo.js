@@ -70,8 +70,8 @@ module.exports = class UserCommand extends Command {
             }
             return msg.embed(embed);
         }
-        catch {
-            msg.reply('⚠ Error, please make sure the username is correct');
+        catch (e) {
+            msg.reply(`Oh no... \`${e}\``);
         }
     } 
 };

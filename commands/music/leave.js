@@ -26,7 +26,6 @@ module.exports = class LeaveCommand extends Command {
 
   
         if(msg.guild.musicData.isPlaying === true) {
-            msg.guild.musicData.songDispatcher.resume(); //handling when user paused the queue
             msg.guild.musicData.songDispatcher.end();
             msg.guild.musicData.queue.length = 0;
 

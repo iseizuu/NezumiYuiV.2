@@ -18,7 +18,6 @@ module.exports = class RemoveSongCommand extends Command {
         });
     }
     run(message, { songNumber }) {
-    //   if (!message.member.permissions.has("MANAGE_CHANNELS") && message.guild.me.permissions.has("MANAGE_CHANNELS")) return message.channel.send("Hey who are you? u can remove this song, just author");
         if (songNumber < 1 && songNumber >= message.guild.musicData.queue.length) {
             return message.reply('Please enter a valid song number');
         }

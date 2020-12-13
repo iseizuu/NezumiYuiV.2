@@ -12,7 +12,7 @@ module.exports = class ExCommand extends Command {
             guarded: true,
             ownerOnly: true,
             hidden: true,
-             args: [
+            args: [
                 {
                     key: 'input',
                     prompt: 'wut?',
@@ -47,8 +47,8 @@ module.exports = class ExCommand extends Command {
     }
     async hastePost(code) {
         const { body } = await this.client.fetch
-        .post('https://hasteb.in/documents')
-        .send(code);
+            .post('https://hasteb.in/documents')
+            .send(code);
         return `https://hasteb.in/${body.key}`;
     }
 };
